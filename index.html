@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="es-419">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Eurolatam — Portafolio Optimizado</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&display=swap" rel="stylesheet" />
+    <style>
+        :root {
+            --transition-fast: 0.3s;
+            --transition-medium: 0.5s;
+            --transition-slow: 0.9s;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-snap-type: y mandatory;
+            overscroll-behavior-y: contain;
+            -webkit-overflow-scrolling: touch;
+            touch-action: manipulation;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background: url('https://i.postimg.cc/d3b8xt4W/FONDO3.jpg') center center fixed;
+            background-size: cover;
+            color: #fff;
+            overflow-x: hidden;
+            overflow-y: scroll;
+        }
+
+        section {
+            height: 100vh;
+            scroll-snap-align: start;
+            scroll-snap-stop: always;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            opacity: 0;
+            transform: translateY(30px) scale(0.97);
+            filter: blur(10px);
+            transition: all var(--transition-slow) cubic-bezier(0.645, 0.045, 0.355, 1);
+            transition-delay: 0.1s;
+        }
+
+        section.visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            filter: blur(0);
+        }
+
+        /* --- 💻 BARRA DE NAVEGACIÓN (DESKTOP) --- */
+        .topbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 0 20px;
+            z-index: 999;
+        }
+
+        .logo-fixed {
+            width: 256px;
+            height: auto;
+            position: absolute; /* Posicionado relativo a .topbar */
+            left: 12px;
+            top: 0;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 24px;
+        }
+
+        .nav-btn {
+            background: none;
+            color: #fff;
+            font-weight: 500;
+            text-decoration: none;
+            font-size: 15px;
+            border: none;
+            padding: 20px 0;
+            transition: all var(--transition-fast) ease;
+        }
+
+        .nav-btn:hover {
+            text-shadow: 0 0 6px #fff;
+            transform: scale(1.06);
+        }
+        
+        /* --- Logo principal y flechas --- */
+        .logo-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+        }
+
+        .logo {
+            width: 860px;
+            height: auto;
+            margin: auto;
+        }
+
+        .flecha-scroll,
+        .flecha-scroll-top {
+            padding: 30px;
+            touch-action: manipulation;
+            transition: opacity 0.4s ease;
+            cursor: pointer;
+            background: none;
+            border: none;
+            z-index: 10;
+        }
+
+        .flecha-scroll {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: flotar 2s infinite ease-in-out;
+        }
+        
+        .flecha-scroll-top {
+            position: fixed;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+            user-select: none;
+            display: none; /* Se muestra con JS */
+        }
+
+        .flecha-scroll img,
+        .flecha-scroll-top img {
+            height: 30px;
+            width: auto;
+            transition: filter var(--transition-fast) ease, transform var(--transition-fast) ease;
+        }
+
+        .flecha-scroll:hover img,
+        .flecha-scroll-top:hover img {
+            filter: drop-shadow(0 0 6px #fff);
+            transform: scale(1.1);
+        }
+
+        @keyframes flotar {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(8px); }
+        }
+
+        /* --- 🎨 GALERÍA THUMBNAILS --- */
+        .gallery-expandable {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding-top: 2rem;
+        }
+
+        .gallery-container {
+            width: 100%;
+            max-width: 1340px;
+            height: 690px;
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            overflow-y: hidden;
+            -webkit-overflow-scrolling: touch;
+            scroll-snap-type: x mandatory;
+        }
+
+        .gallery-container img {
+            flex: 0 0 auto;
+            width: 10%;
+            height: 100%;
+            object-fit: cover;
+            transition: all var(--transition-medium) ease-in-out;
+            cursor: pointer;
+            opacity: 0;
+            transform: scale(0.96);
+            scroll-snap-align: center;
+        }
+
+        .gallery-container img.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .gallery-container img:hover {
+            width: 35%;
+            box-shadow: 0 0 28px rgba(255, 255, 255, 0.4);
+        }
+
+        /* --- 🪟 VISOR DE IMAGEN (MODAL) --- */
+        /* Estilos movidos desde el HTML para mayor limpieza */
+        #visorImagen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.85);
+            display: none; /* Se activa con JS */
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 9999;
+            backdrop-filter: blur(12px);
+            touch-action: none; /* Para el swipe */
+        }
+
+        #imagenCentral {
+            max-width: 80vw;
+            max-height: 75vh;
+            border-radius: 12px;
+            box-shadow: 0 0 42px rgba(255, 255, 255, 0.4);
+            opacity: 0;
+            transform: scale(0.92);
+            transition: opacity var(--transition-medium) ease, transform var(--transition-medium) ease;
+            pointer-events: none; /* La imagen no captura clics */
+        }
+        
+        .visor-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 42px;
+            color: white;
+            cursor: pointer;
+            z-index: 1000;
+            user-select: none;
+            padding: 20px;
+        }
+        #prevBtn { left: 20px; }
+        #nextBtn { right: 20px; }
+
+        #contadorImagen {
+            position: absolute;
+            top: 24px;
+            right: 32px;
+            font-size: 14px;
+            color: #aaa;
+            font-family: monospace;
+            background: rgba(255, 255, 255, 0.06);
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+
+        #miniaturas {
+            position: absolute;
+            bottom: 16px;
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding: 8px 12px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            max-width: 90vw;
+            scroll-snap-type: x mandatory;
+        }
+        #miniaturas img {
+            height: 48px;
+            border-radius: 6px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            opacity: 0.5;
+            scroll-snap-align: center;
+            transition: transform var(--transition-fast) ease, opacity var(--transition-fast) ease, border-color var(--transition-fast) ease;
+        }
+        #miniaturas img:hover {
+            transform: scale(1.1);
+            opacity: 1;
+        }
+        #miniaturas img.active {
+            opacity: 1;
+            border-color: white;
+        }
+
+
+        /* --- 📱 RESPONSIVO PARA MÓVILES Y TABLETS (768px o menos) --- */
+        @media (max-width: 768px) {
+            body {
+                background-attachment: scroll !important; /* Mejora rendimiento en móvil */
+                padding-top: 60px; /* Espacio para la barra fija */
+            }
+
+            section {
+                height: auto; /* Altura flexible */
+                min-height: calc(100vh - 60px); /* Ocupa al menos la pantalla visible */
+                padding: 40px 20px;
+                scroll-snap-align: none; /* Desactivamos el snap estricto para un scroll más natural */
+            }
+            html {
+                scroll-snap-type: none;
+            }
+
+            /* --- ✨ BARRA SUPERIOR MÓVIL PROFESIONAL --- */
+            .topbar {
+                justify-content: space-between; /* Logo a la izq, links a la der */
+                padding: 0 15px;
+                height: 60px;
+                background: rgba(0, 0, 0, 0.7);
+                backdrop-filter: blur(10px);
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+            .logo-fixed {
+                position: static; /* Quitamos la posición absoluta */
+                width: 150px; /* Hacemos el logo más pequeño */
+            }
+            .logo {
+                width: 90%;
+                max-width: 400px;
+            }
+
+            .nav-links {
+                gap: 10px;
+            }
+            .nav-btn {
+                padding: 8px 10px;
+                font-size: 14px;
+                border-radius: 8px;
+                transition: background-color var(--transition-fast) ease;
+            }
+            .nav-btn:active { /* Efecto al tocar */
+                background-color: rgba(255, 255, 255, 0.15);
+            }
+            
+            .flecha-scroll, .flecha-scroll-top { display: none; } /* Ocultamos flechas, el scroll es natural */
+            
+            .gallery-container {
+                height: auto;
+                flex-direction: column;
+                gap: 15px;
+            }
+            .gallery-container img, .gallery-container img:hover {
+                width: 100%;
+                height: auto;
+                border-radius: 8px;
+            }
+            
+            /* --- Visor de imagen en móvil --- */
+            #imagenCentral {
+                max-width: 95vw;
+                max-height: 70vh;
+            }
+            .visor-nav { font-size: 32px; }
+            #prevBtn { left: 5px; }
+            #nextBtn { right: 5px; }
+            #miniaturas { max-width: 95vw; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="topbar">
+        <a href="#seccion1">
+            <img src="https://i.postimg.cc/QCQn4w9g/3dgifmaker57006.gif" alt="Logo Eurolatam" class="logo-fixed" />
+        </a>
+        <div class="nav-links">
+            <a href="#seccion1" class="nav-btn">Inicio</a>
+            <a href="#seccion2" class="nav-btn">Galería</a>
+            <a href="#seccion3" class="nav-btn">Lettering</a>
+            <a href="#seccion4" class="nav-btn">Nosotros</a>
+            <a href="https://instagram.com/eurolatam" target="_blank" class="nav-btn">Instagram</a>
+        </div>
+    </div>
+    
+    <section id="seccion1">
+        <div class="logo-container">
+            <img src="https://i.postimg.cc/QCQn4w9g/3dgifmaker57006.gif" alt="Logo central Eurolatam" class="logo" />
+        </div>
+        <a href="#seccion2" class="flecha-scroll">
+            <img src="https://i.postimg.cc/nhh6d9J0/FLECHA.png" alt="Ir a Sección 2" />
+        </a>
+    </section>
+
+    <section id="seccion2">
+        <div class="gallery-expandable">
+            <div class="gallery-container">
+                <img src="https://i.postimg.cc/NFP670vC/Proyecto-nuevo-9.jpg" alt="Proyecto 9" />
+                <img src="https://i.postimg.cc/FzKbLL8J/Proyecto-nuevo-8.jpg" alt="Proyecto 8" />
+                <img src="https://i.postimg.cc/9Mbt0p8h/Proyecto-nuevo-7.jpg" alt="Proyecto 7" />
+                <img src="https://i.postimg.cc/254xRmn3/Proyecto-nuevo-4.jpg" alt="Proyecto 4" />
+                <img src="https://i.postimg.cc/q7fG5gh9/Proyecto-nuevo-2.jpg" alt="Proyecto 2" />
+                <img src="https://i.postimg.cc/rFPj5f8y/Proyecto-nuevo-1.jpg" alt="Proyecto 1" />
+                <img src="https://i.postimg.cc/rFKCy55B/Proyecto-nuevo.jpg" alt="Proyecto base" />
+                <img src="https://i.postimg.cc/bJp9qMRg/Proyecto-nuevo-3.jpg" alt="Proyecto 3" />
+                <img src="https://i.postimg.cc/g2LDs3JV/Proyecto-nuevo-5.jpg" alt="Proyecto 5" />
+                <img src="https://i.postimg.cc/bY69jmS0/Proyecto-nuevo-6.jpg" alt="Proyecto 6" />
+            </div>
+        </div>
+        <a href="#seccion1" class="flecha-scroll-top">
+            <img src="https://i.postimg.cc/YqgtYs7M/FLECHA2.png" alt="Volver a Inicio" />
+        </a>
+        <a href="#seccion3" class="flecha-scroll">
+            <img src="https://i.postimg.cc/nhh6d9J0/FLECHA.png" alt="Ir a Sección 3" />
+        </a>
+    </section>
+
+    <section id="seccion3">
+        <div class="gallery-expandable">
+            <div class="gallery-container">
+                <img src="https://i.postimg.cc/6pLy5Kxg/imagen9.jpg" alt="Imagen 9" />
+                <img src="https://i.postimg.cc/1Xkf45th/imagen4.jpg" alt="Imagen 4" />
+                <img src="https://i.postimg.cc/k4hV3yP5/imagen3.jpg" alt="Imagen 3" />
+                <img src="https://i.postimg.cc/FzdY9JhV/imagen2.jpg" alt="Imagen 2" />
+                <img src="https://i.postimg.cc/rmpdPPbb/imagen1.jpg" alt="Imagen 1" />
+                <img src="https://i.postimg.cc/L4wqxvVC/imagen5.jpg" alt="Imagen 5" />
+                <img src="https://i.postimg.cc/hPmX6xyS/imagen6.jpg" alt="Imagen 6" />
+                <img src="https://i.postimg.cc/zG1yrB6T/imagen7.jpg" alt="Imagen 7" />
+                <img src="https://i.postimg.cc/hGDhXYSj/imagen8.jpg" alt="Imagen 8" />
+            </div>
+        </div>
+        <a href="#seccion2" class="flecha-scroll-top">
+            <img src="https://i.postimg.cc/YqgtYs7M/FLECHA2.png" alt="Volver a Sección 2" />
+        </a>
+        <a href="#seccion4" class="flecha-scroll">
+            <img src="https://i.postimg.cc/nhh6d9J0/FLECHA.png" alt="Ir a Sección 4" />
+        </a>
+    </section>
+
+    <section id="seccion4">
+        <div style="text-align: center;">
+            <a href="https://instagram.com/eurolatam" target="_blank" style="font-size: 20px; color: #fff; text-decoration: none; padding: 16px 32px; border: 2px solid #fff; border-radius: 8px; transition: all 0.3s ease;">
+                Instagram
+            </a>
+            <a href="#seccion3" class="flecha-scroll-top">
+                <img src="https://i.postimg.cc/YqgtYs7M/FLECHA2.png" alt="Volver a Sección 3" />
+            </a>
+        </div>
+    </section>
+
+    <div id="visorImagen">
+        <div id="prevBtn" class="visor-nav">←</div>
+        <div id="nextBtn" class="visor-nav">→</div>
+        <img id="imagenCentral" src="" alt="" />
+        <div id="contadorImagen"></div>
+        <div id="miniaturas"></div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const secciones = document.querySelectorAll("section");
+            const flechasAbajo = document.querySelectorAll(".flecha-scroll");
+            const flechasArriba = document.querySelectorAll(".flecha-scroll-top");
+            
+            // --- Animación de secciones al hacer scroll ---
+            const observerSecciones = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add("visible");
+                        const id = entry.target.id;
+                        flechasArriba.forEach(f => f.style.display = id === "seccion1" ? "none" : "block");
+                        flechasAbajo.forEach(f => f.style.opacity = id === "seccion4" ? "0" : "1");
+                    }
+                });
+            }, { threshold: 0.4 });
+            secciones.forEach(s => observerSecciones.observe(s));
+            
+            // --- Animación de imágenes de galería al hacer scroll ---
+            const observerGaleria = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) entry.target.classList.add("visible");
+                });
+            }, { threshold: 0.3 });
+            document.querySelectorAll(".gallery-container img").forEach(img => observerGaleria.observe(img));
+
+            // --- Lógica del Visor de Imágenes ---
+            const visor = document.getElementById("visorImagen");
+            const imgCentral = document.getElementById("imagenCentral");
+            const contador = document.getElementById("contadorImagen");
+            const miniaturasContainer = document.getElementById("miniaturas");
+            const nextBtn = document.getElementById("nextBtn");
+            const prevBtn = document.getElementById("prevBtn");
+            
+            let indexActivo = 0;
+            let grupoActual = [];
+
+            function mostrarImagenCentral(indice) {
+                if (!grupoActual || grupoActual.length === 0) return;
+                indexActivo = (indice + grupoActual.length) % grupoActual.length;
+                
+                const target = grupoActual[indexActivo];
+                imgCentral.style.opacity = "0";
+                imgCentral.style.transform = "scale(0.92)";
+
+                setTimeout(() => {
+                    imgCentral.src = target.src;
+                    imgCentral.alt = target.alt;
+                    contador.textContent = `${indexActivo + 1} / ${grupoActual.length}`;
+                    
+                    imgCentral.style.opacity = "1";
+                    imgCentral.style.transform = "scale(1)";
+                }, 150);
+                
+                actualizarMiniaturas();
+            }
+
+            function actualizarMiniaturas() {
+                miniaturasContainer.innerHTML = grupoActual.map((img, i) => `
+                    <img src="${img.src}" data-index="${i}" class="${i === indexActivo ? 'active' : ''}" />
+                `).join("");
+                
+                miniaturasContainer.querySelectorAll("img").forEach(mini => {
+                    mini.addEventListener("click", () => mostrarImagenCentral(parseInt(mini.dataset.index)));
+                });
+
+                const activeMini = miniaturasContainer.querySelector('.active');
+                if (activeMini) {
+                    activeMini.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                }
+            }
+
+            function abrirVisor(imagenes, startIndex) {
+                grupoActual = imagenes;
+                visor.style.display = "flex";
+                document.body.style.overflow = "hidden"; // Evita scroll de fondo
+                mostrarImagenCentral(startIndex);
+            }
+
+            function cerrarVisor() {
+                visor.style.display = "none";
+                document.body.style.overflow = "auto";
+            }
+
+            document.querySelectorAll(".gallery-container").forEach(container => {
+                const imagenes = Array.from(container.querySelectorAll('img'));
+                imagenes.forEach((img, index) => {
+                    img.addEventListener("click", () => abrirVisor(imagenes, index));
+                });
+            });
+
+            // Eventos de Navegación del Visor
+            nextBtn.addEventListener("click", () => mostrarImagenCentral(indexActivo + 1));
+            prevBtn.addEventListener("click", () => mostrarImagenCentral(indexActivo - 1));
+            visor.addEventListener("click", (e) => {
+                if (e.target.id === "visorImagen") cerrarVisor();
+            });
+            window.addEventListener("keydown", (e) => {
+                if (visor.style.display === "flex") {
+                    if (e.key === "Escape") cerrarVisor();
+                    if (e.key === "ArrowRight") nextBtn.click();
+                    if (e.key === "ArrowLeft") prevBtn.click();
+                }
+            });
+
+            // --- 👆 NUEVA LÓGICA DE SWIPE PARA EL VISOR ---
+            let touchStartX = 0;
+            let touchEndX = 0;
+            const swipeThreshold = 50; // Mínimo de píxeles para considerar un swipe
+
+            visor.addEventListener('touchstart', (e) => {
+                touchStartX = e.changedTouches[0].screenX;
+            }, { passive: true });
+
+            visor.addEventListener('touchend', (e) => {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+            });
+
+            function handleSwipe() {
+                const deltaX = touchEndX - touchStartX;
+                if (Math.abs(deltaX) > swipeThreshold) {
+                    if (deltaX < 0) {
+                        // Swipe a la izquierda (siguiente imagen)
+                        nextBtn.click();
+                    } else {
+                        // Swipe a la derecha (imagen anterior)
+                        prevBtn.click();
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>
