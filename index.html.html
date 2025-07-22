@@ -1,0 +1,725 @@
+html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Eurolatam — Portafolio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&display=swap" rel="stylesheet" />
+  <style>
+    html {
+      scroll-behavior: smooth;
+      scroll-snap-type: y mandatory;
+      overscroll-behavior-y: contain;
+      -webkit-overflow-scrolling: touch;
+      touch-action: manipulation;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: url('https://i.postimg.cc/d3b8xt4W/FONDO3.jpg') center center fixed;
+      background-size: cover;
+      color: #fff;
+      overflow-x: hidden;
+      overflow-y: scroll;
+      scroll-padding-top: 80px;
+    }
+
+    section {
+      height: 100vh;
+      scroll-snap-align: start;
+      scroll-snap-stop: always;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      opacity: 0;
+      transform: translateY(80px) scale(0.98);
+      filter: blur(16px);
+      transition:
+        transform 1.2s cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 1.6s ease,
+        filter 1s ease;
+    }
+
+    section.visible {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+      filter: blur(0);
+    }
+
+    .topbar {
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 24px;
+      z-index: 999;
+    }
+
+    .nav-btn {
+      background: none;
+      color: #fff;
+      font-weight: 500;
+      text-decoration: none;
+      font-size: 15px;
+      border: none;
+      padding: 20px 0;
+      transition: all 0.3s ease;
+    }
+
+    .nav-btn:hover {
+      text-shadow: 0 0 6px #fff;
+      transform: scale(1.06);
+    }
+
+    .logo-fixed {
+      position: fixed;
+      top: 0;
+      left: 12px;
+      width: 256px;
+      height: auto;
+      z-index: 3;
+    }
+
+    .logo-container {
+      animation: fadeIn 2s forwards 1s;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+    }
+
+    .logo {
+      width: 860px;
+      height: auto;
+      margin: auto;
+    }
+
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+
+    @keyframes flotar {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(8px); }
+    }
+
+    .flecha-scroll,
+    .flecha-scroll-top {
+      padding: 30px;
+      touch-action: manipulation;
+      transition: opacity 0.4s ease;
+    }
+
+    .flecha-scroll {
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      z-index: 10;
+      animation: flotar 2s infinite;
+    }
+
+    .flecha-scroll img,
+    .flecha-scroll-top img {
+      height: 30px;
+      width: auto;
+      transition: filter 0.3s ease, transform 0.3s ease;
+    }
+
+    .flecha-scroll:hover img,
+    .flecha-scroll-top:hover img {
+      filter: drop-shadow(0 0 6px #fff);
+      transform: scale(1.1);
+    }
+
+    .flecha-scroll-top {
+  position: fixed;
+  top: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  font-size: 48px;
+  color: white;
+  cursor: pointer;
+  user-select: none;
+  transition: opacity 0.3s ease;
+}
+
+
+    /* 🎨 Galería Expandible */
+    .gallery-expandable {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding-top: 2rem;
+    }
+
+    .gallery-container {
+      width: 100%;
+      max-width: 1340px;
+      height: 690px;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      overflow-x: auto;
+      overflow-y: hidden;
+      -webkit-overflow-scrolling: touch;
+      scroll-snap-type: x mandatory;
+    }
+
+    .gallery-container img {
+      flex: 0 0 auto;
+      width: 10%;
+      height: 100%;
+      object-fit: cover;
+      transition: all 0.5s ease-in-out;
+      cursor: pointer;
+      opacity: 0;
+      transform: scale(0.96);
+      scroll-snap-align: center;
+    }
+
+    .gallery-container img.visible {
+      opacity: 20;
+      transform: scale(1);
+    }
+
+    .gallery-container img:hover {
+      width: 35%;
+      box-shadow: 0 0 28px rgba(255, 255, 255, 0.4);
+    }
+
+    /* 📱 Responsivo para móviles */
+     @media (max-width: 1024px) {
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background-image: url('https://i.postimg.cc/d3b8xt4W/FONDO3.jpg') !important;
+      background-size: cover !important;
+      background-position: center center !important;
+      background-repeat: no-repeat !important;
+      background-attachment: scroll !important;
+      background-color: #000 !important;
+    }
+
+    header .logo {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 24px auto;
+      width: 100%;
+      max-width: 360px;
+    }
+
+    nav {
+      text-align: center;
+      padding: 12px 0;
+    }
+
+    .gallery-container {
+      height: 320px;
+      gap: 6px;
+      padding-left: 12px;
+    }
+
+    .gallery-container img {
+      width: 32%;
+      border-radius: 6px;
+      height: 180px;
+    }
+
+    .gallery-container img:hover {
+      width: 42%;
+    }
+
+    #imagenCentral {
+      max-width: 96vw;
+      max-height: 88vh;
+    }
+
+    #prevBtn,
+    #nextBtn {
+      font-size: 32px;
+    }
+
+    .flecha-scroll,
+    .flecha-scroll-top {
+      font-size: 36px;
+    }
+
+    #miniaturas img {
+      height: 36px !important;
+    }
+  }
+
+  @media (orientation: landscape) {
+    body {
+      background-size: cover !important;
+      background-position: center center !important;
+    }
+
+    header .logo {
+      margin-top: 12px;
+      margin-bottom: 12px;
+    }
+
+    nav {
+      padding: 8px 0;
+    }
+  }
+</style>
+</head>
+<body>
+
+    <!-- 🌀 Logo fijo -->
+  <img src="https://i.postimg.cc/QCQn4w9g/3dgifmaker57006.gif"
+       alt="Logo Eurolatam fijo"
+       class="logo-fixed" />
+
+  <!-- 🔗 Navegación -->
+  <div class="topbar">
+    <a href="#seccion1" class="nav-btn">Home</a>
+    <a href="#seccion2" class="nav-btn">Gallery</a>
+    <a href="#seccion3" class="nav-btn">Lettering</a>
+    <a href="#seccion4" class="nav-btn">About Us</a>
+    <a href="https://instagram.com/eurolatam" class="nav-btn">Instagram</a>
+  </div>
+
+  <!-- 💠 Sección 1 -->
+  <section id="seccion1">
+    <div class="logo-container">
+      <img src="https://i.postimg.cc/QCQn4w9g/3dgifmaker57006.gif"
+           alt="Logo central Eurolatam"
+           class="logo" />
+    </div>
+    <a href="#seccion2" class="flecha-scroll">
+      <img src="https://i.postimg.cc/nhh6d9J0/FLECHA.png"
+           alt="Ir a Sección 2" />
+    </a>
+  </section>
+
+          <!-- 🖼️ Sección 2: Galería Expandible Eurolatam -->
+  <section id="seccion2">
+  <div class="gallery-expandable">
+    <div class="gallery-container">
+      <img src="https://i.postimg.cc/NFP670vC/Proyecto-nuevo-9.jpg" alt="Proyecto 9" />
+      <img src="https://i.postimg.cc/FzKbLL8J/Proyecto-nuevo-8.jpg" alt="Proyecto 8" />
+      <img src="https://i.postimg.cc/9Mbt0p8h/Proyecto-nuevo-7.jpg" alt="Proyecto 7" />
+      <img src="https://i.postimg.cc/254xRmn3/Proyecto-nuevo-4.jpg" alt="Proyecto 4" />
+      <img src="https://i.postimg.cc/q7fG5gh9/Proyecto-nuevo-2.jpg" alt="Proyecto 2" />
+      <img src="https://i.postimg.cc/rFPj5f8y/Proyecto-nuevo-1.jpg" alt="Proyecto 1" />
+      <img src="https://i.postimg.cc/rFKCy55B/Proyecto-nuevo.jpg" alt="Proyecto base" />
+      <img src="https://i.postimg.cc/bJp9qMRg/Proyecto-nuevo-3.jpg" alt="Proyecto 3" />
+      <img src="https://i.postimg.cc/g2LDs3JV/Proyecto-nuevo-5.jpg" alt="Proyecto 5" />
+      <img src="https://i.postimg.cc/bY69jmS0/Proyecto-nuevo-6.jpg" alt="Proyecto 6" />
+    </div>
+  </div>
+
+<!-- 🔼 Flecha scroll hacia arriba -->
+<a href="#seccion1" class="flecha-scroll-top">
+  <img src="https://i.postimg.cc/YqgtYs7M/FLECHA2.png" alt="Volver a Home" />
+</a>
+
+  <!-- 🔽 Flecha scroll hacia abajo (hacia Sección 3) -->
+  <a href="#seccion3" class="flecha-scroll">
+    <img src="https://i.postimg.cc/nhh6d9J0/FLECHA.png" alt="Ir a Sección 3" />
+  </a>
+</section>
+
+<!-- 🖼️ Sección 3: Galería Expandible Parte II -->
+<section id="seccion3">
+  <div class="gallery-expandable">
+    <div class="gallery-container">
+      <img src="https://i.postimg.cc/6pLy5Kxg/imagen9.jpg" alt="Imagen 9" />
+      <img src="https://i.postimg.cc/1Xkf45th/imagen4.jpg" alt="Imagen 4" />
+      <img src="https://i.postimg.cc/k4hV3yP5/imagen3.jpg" alt="Imagen 3" />
+      <img src="https://i.postimg.cc/FzdY9JhV/imagen2.jpg" alt="Imagen 2" />
+      <img src="https://i.postimg.cc/rmpdPPbb/imagen1.jpg" alt="Imagen 1" />
+      <img src="https://i.postimg.cc/L4wqxvVC/imagen5.jpg" alt="Imagen 5" />
+      <img src="https://i.postimg.cc/hPmX6xyS/imagen6.jpg" alt="Imagen 6" />
+      <img src="https://i.postimg.cc/zG1yrB6T/imagen7.jpg" alt="Imagen 7" />
+      <img src="https://i.postimg.cc/hGDhXYSj/imagen8.jpg" alt="Imagen 8" />
+    </div>
+  </div>
+
+<!-- 🔼 Flecha scroll hacia arriba (hacia Sección 2) -->
+<a href="#seccion2" class="flecha-scroll-top">
+  <img src="https://i.postimg.cc/YqgtYs7M/FLECHA2.png" alt="Volver a Sección 2" />
+</a>
+
+  <!-- 🔽 Flecha scroll hacia abajo (hacia Sección 4) -->
+  <a href="#seccion4" class="flecha-scroll">
+    <img src="https://i.postimg.cc/nhh6d9J0/FLECHA.png" alt="Ir a Sección 4" />
+  </a>
+</section>
+
+<!-- 🧩 Sección 4: About Us -->
+<section id="seccion4">
+  <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; text-align: center;">
+    <a href="https://instagram.com/eurolatam" target="_blank" style="font-size: 20px; color: #fff; text-decoration: none; padding: 16px 32px; border: 2px solid #fff; border-radius: 8px; transition: all 0.3s ease;">
+      Instagram
+    </a>
+
+    <!-- Espaciado vertical -->
+    <div style="height: 40px;"></div>
+
+    <!-- 🔼 Flecha scroll hacia arriba (regresa a Sección 3 / Lettering) -->
+    <a href="#seccion3" class="flecha-scroll-top">
+      <img src="https://i.postimg.cc/YqgtYs7M/FLECHA2.png" alt="Volver a Sección 3" />
+    </a>
+  </div>
+</section>
+
+<!-- 🪟 Visor flotante extendido con leyenda, contador y miniaturas -->
+<div id="visorImagen" style="
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.85);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  z-index: 9999;
+  backdrop-filter: blur(12px);
+">
+  <!-- 🔘 Navegación lateral -->
+  <div id="prevBtn" style="
+    position: absolute;
+    left: 352px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 42px;
+    color: white;
+    cursor: pointer;
+    z-index: 1000;
+    user-select: none;
+  ">←</div>
+
+  <div id="nextBtn" style="
+    position: absolute;
+    right: 352px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 42px;
+    color: white;
+    cursor: pointer;
+    z-index: 1000;
+    user-select: none;
+  ">→</div>
+
+  <!-- 🖼️ Imagen central con fade-scale -->
+  <img id="imagenCentral" src="" alt="" style="
+    max-width: 104vw;
+    max-height: 92vh;
+    border-radius: 12px;
+    box-shadow: 0 0 42px rgba(255,255,255,0.4);
+    opacity: 0;
+    transform: scale(0.92);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    pointer-events: none;
+  " />
+
+  <!-- 📝 Leyenda dinámica -->
+  <div id="leyendaImagen" style="
+    margin-top: 18px;
+    font-size: 16px;
+    color: #ddd;
+    font-style: italic;
+    text-align: center;
+    max-width: 80vw;
+  "></div>
+
+  <!-- 🔢 Contador de posición -->
+  <div id="contadorImagen" style="
+    position: absolute;
+    top: 24px;
+    right: 32px;
+    font-size: 14px;
+    color: #aaa;
+    font-family: monospace;
+    background: rgba(255,255,255,0.06);
+    padding: 4px 8px;
+    border-radius: 6px;
+  ">1 / 10</div>
+
+  <!-- 🧩 Miniaturas flotantes -->
+  <div id="miniaturas" style="
+    position: absolute;
+    bottom: 16px;
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 8px 12px;
+    background: rgba(0,0,0,0.3);
+    border-radius: 12px;
+    max-width: 90vw;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  ">
+    <!-- Se generan dinámicamente desde el script -->
+  </div>
+</div>
+
+<!-- 🎬 Activador visual, scroll cinematográfico y adaptación móvil -->
+<script>
+  const secciones = document.querySelectorAll("section");
+  const flechaAbajo = document.querySelector(".flecha-scroll");
+  const flechaArriba = document.querySelector(".flecha-scroll-top");
+
+  const observerSecciones = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("visible");
+        const id = entry.target.id;
+        flechaArriba.style.display = id === "seccion1" ? "none" : "block";
+        flechaAbajo.style.opacity = id === "seccion4" ? "0" : "1";
+      }
+    });
+  }, { threshold: 0.4 });
+  secciones.forEach(s => observerSecciones.observe(s));
+
+  const galeriaExpandible = document.querySelectorAll(".gallery-container img");
+  const observerGaleriaExpandible = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) entry.target.classList.add("visible");
+    });
+  }, { threshold: 0.3 });
+  galeriaExpandible.forEach(img => observerGaleriaExpandible.observe(img));
+
+  galeriaExpandible.forEach(img => {
+    img.addEventListener("touchstart", () => {
+      galeriaExpandible.forEach(i => i.classList.remove("touched"));
+      img.classList.add("touched");
+    });
+    img.addEventListener("touchend", () => {
+      setTimeout(() => img.classList.remove("touched"), 800);
+    });
+  });
+
+  document.querySelectorAll(".gallery-container").forEach(container => {
+    container.addEventListener("wheel", (e) => {
+      e.preventDefault();
+      container.scrollBy({ left: e.deltaY * 1.2, behavior: "smooth" });
+    });
+  });
+
+  const visor = document.getElementById("visorImagen");
+  const imgCentral = document.getElementById("imagenCentral");
+  const contador = document.getElementById("contadorImagen");
+  const miniaturas = document.getElementById("miniaturas");
+  let indexActivo = 0;
+  let grupoActual = [];
+
+  function mostrarImagenCentral(indice) {
+    const target = grupoActual[indice];
+    imgCentral.src = target.src;
+    contador.textContent = `${indice + 1} / ${grupoActual.length}`;
+    miniaturas.innerHTML = grupoActual.map((img, i) => `
+      <img src="${img.src}" data-index="${i}" style="
+        height: 48px;
+        border-radius: 6px;
+        cursor: pointer;
+        opacity: ${i === indice ? "1" : "0.5"};
+        border: ${i === indice ? "2px solid white" : "none"};
+        scroll-snap-align: center;
+        transition: transform 0.3s ease, opacity 0.3s ease;
+      "/>`).join("");
+
+    miniaturas.querySelectorAll("img").forEach(mini => {
+      mini.addEventListener("click", () => {
+        indexActivo = parseInt(mini.dataset.index);
+        mostrarImagenCentral(indexActivo);
+      });
+      mini.addEventListener("mouseenter", () => {
+        mini.style.transform = "scale(1.15)";
+        mini.style.opacity = "1";
+      });
+      mini.addEventListener("mouseleave", () => {
+        const isActive = parseInt(mini.dataset.index) === indexActivo;
+        mini.style.transform = "scale(1)";
+        mini.style.opacity = isActive ? "1" : "0.5";
+      });
+    });
+
+    imgCentral.style.opacity = "0";
+    imgCentral.style.transform = "scale(0.92)";
+    visor.style.display = "flex";
+    setTimeout(() => {
+      imgCentral.style.opacity = "1";
+      imgCentral.style.transform = "scale(1)";
+    }, 50);
+  }
+
+  function cerrarVisor() {
+    imgCentral.style.opacity = "0";
+    imgCentral.style.transform = "scale(0.92)";
+    setTimeout(() => visor.style.display = "none", 400);
+  }
+
+  document.querySelectorAll("#seccion2 .gallery-container img").forEach((img, index, list) => {
+    img.addEventListener("click", () => {
+      grupoActual = Array.from(list);
+      indexActivo = index;
+      mostrarImagenCentral(indexActivo);
+    });
+    img.addEventListener("touchstart", (e) => {
+      const now = Date.now();
+      if (img._ultimoToque && now - img._ultimoToque < 400) {
+        grupoActual = Array.from(list);
+        indexActivo = index;
+        mostrarImagenCentral(indexActivo);
+      }
+      img._ultimoToque = now;
+    });
+  });
+
+  document.querySelectorAll("#seccion3 .gallery-container img").forEach((img, index, list) => {
+    img.addEventListener("click", () => {
+      grupoActual = Array.from(list);
+      indexActivo = index;
+      mostrarImagenCentral(indexActivo);
+    });
+    img.addEventListener("touchstart", (e) => {
+      const now = Date.now();
+      if (img._ultimoToque && now - img._ultimoToque < 400) {
+        grupoActual = Array.from(list);
+        indexActivo = index;
+        mostrarImagenCentral(indexActivo);
+      }
+      img._ultimoToque = now;
+    });
+  });
+
+  document.getElementById("nextBtn").addEventListener("click", () => {
+    if (!grupoActual.length) return;
+    indexActivo = (indexActivo + 1) % grupoActual.length;
+    mostrarImagenCentral(indexActivo);
+  });
+
+  document.getElementById("prevBtn").addEventListener("click", () => {
+    if (!grupoActual.length) return;
+    indexActivo = (indexActivo - 1 + grupoActual.length) % grupoActual.length;
+    mostrarImagenCentral(indexActivo);
+  });
+
+  visor.addEventListener("click", (e) => {
+    if (e.target.id === "visorImagen") cerrarVisor();
+  });
+
+  visor.addEventListener("wheel", (e) => {
+    e.preventDefault();
+    if (!grupoActual.length) return;
+    indexActivo = e.deltaY > 0
+      ? (indexActivo + 1) % grupoActual.length
+      : (indexActivo - 1 + grupoActual.length) % grupoActual.length;
+    mostrarImagenCentral(indexActivo);
+  });
+
+  window.addEventListener("keydown", (e) => {
+    if (visor.style.display === "flex") {
+      if (e.key === "Escape") cerrarVisor();
+      if (e.key === "ArrowRight") {
+        indexActivo = (indexActivo + 1) % grupoActual.length;
+        mostrarImagenCentral(indexActivo);
+      }
+      if (e.key === "ArrowLeft") {
+        indexActivo = (indexActivo - 1 + grupoActual.length) % grupoActual.length;
+        mostrarImagenCentral(indexActivo);
+      }
+    }
+  });
+
+  function scrollCinematico(destinoId, duracion = 900) {
+    const destino = document.querySelector(destinoId);
+    if (!destino) return;
+    ocultarFlechas();
+    const inicio = window.pageYOffset;
+    const destinoY = destino.offsetTop;
+    const distancia = destinoY - inicio;
+    const inicioTiempo = performance.now();
+
+    function animarScroll(tActual) {
+      const tPasado = tActual - inicioTiempo;
+      const progreso = Math.min(tPasado / duracion, 1);
+      const easing = progreso < 0.5
+        ? 4 * progreso ** 3
+        : 1 - Math.pow(-2 * progreso + 2, 3) / 2;
+      window.scrollTo(0, inicio + distancia * easing);
+      if (progreso < 1) {
+        requestAnimationFrame(animarScroll);
+      } else {
+        setTimeout(mostrarFlechas, 800);
+      }
+    }
+
+    requestAnimationFrame(animarScroll);
+  }
+
+  document.querySelectorAll('a[href^="#"]').forEach(enlace => {
+    enlace.addEventListener("click", function(e) {
+      const destinoId = this.getAttribute("href");
+      const destino = document.querySelector(destinoId);
+      if (destino) {
+        e.preventDefault();
+        scrollCinematico(destinoId);
+        setTimeout(() => mostrarFlechas(), 900);
+      }
+    });
+  });
+
+  function ocultarFlechas() {
+    flechaAbajo.style.opacity = "0";
+    flechaArriba.style.opacity = "0";
+  }
+
+  function mostrarFlechas() {
+    flechaAbajo.style.opacity = "1";
+    flechaArriba.style.opacity = "1";
+  }
+
+  let scrollActivo;
+  window.addEventListener("scroll", () => {
+    clearTimeout(scrollActivo);
+    ocultarFlechas();
+    scrollActivo = setTimeout(() => {
+      mostrarFlechas();
+    }, 800);
+  });
+
+  let inicioY = null;
+  window.addEventListener("touchstart", (e) => {
+    inicioY = e.touches[0].clientY;
+  });
+
+  window.addEventListener("touchend", (e) => {
+    if (inicioY === null) return;
+    const finY = e.changedTouches[0].clientY;
+    const deltaY = inicioY - finY;
+    const seccionesArray = Array.from(document.querySelectorAll("section"));
+    const indexActual = seccionesArray.findIndex(sec =>
+      sec.classList.contains("visible")
+    );
+
+    let destinoId = null;
+    if (deltaY > 0 && seccionesArray[indexActual + 1]) { destinoId = "#" + seccionesArray[indexActual + 1].id; } else if (deltaY < 0 && seccionesArray[indexActual - 1]) { destinoId = "#" + seccionesArray[indexActual - 1].id; }
+
+if (destinoId) scrollCinematico(destinoId); inicioY = null; }); 
+</script>
+</body>
+</html>
