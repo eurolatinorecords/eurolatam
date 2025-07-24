@@ -302,8 +302,16 @@
             .flecha-scroll-top {
                 font-size: 36px;
             }
+            #miniaturas {
+                display: flex !important;
+                bottom: 10px !important;
+                max-width: 95% !important;
+                padding: 8px !important;
+            }
             #miniaturas img {
-                height: 36px !important;
+                height: 40px !important;
+                width: 40px !important;
+                margin: 0 3px !important;
             }
         }
 
@@ -483,6 +491,10 @@
     </div>
 
     <script>
+        // 🎯 Variables globales para el visor
+        let imagenesActuales = [];
+        let indiceActual = 0;
+
         // 🎯 Intersection Observer para animaciones de entrada
         const observer = new IntersectionObserver((entries) => {
             entries.forEach((entry) => {
@@ -505,14 +517,10 @@
             observer.observe(img);
         });
 
-        // 🖼️ Sistema de visor modal mejorado
-        let imagenesActuales = [];
-        let indiceActual = 0;
-
-        // Función para abrir el visor
-        function abrirVisor(imagenes, indiceInicial) {
+        // 🖼️ Funciones del visor modal
+        function abrirVisor(imagenes, indice) {
             imagenesActuales = imagenes;
-            indiceActual = indiceInicial;
+            indiceActual = indice;
             
             document.getElementById('visorModal').style.display = 'flex';
             document.body.style.overflow = 'hidden';
@@ -521,26 +529,21 @@
             crearMiniaturas();
         }
 
-        // Función para mostrar la imagen actual
         function mostrarImagenActual() {
-            const img = document.getElementById('imagenCentral');
-            const titulo = document.getElementById('tituloImagen');
-            const contador = document.getElementById('contadorImagen');
-            
-            img.src = imagenesActuales[indiceActual].src;
-            titulo.textContent = imagenesActuales[indiceActual].alt;
-            contador.textContent = `${indiceActual + 1} / ${imagenesActuales.length}`;
+            const imagen = imagenesActuales[indiceActual];
+            document.getElementById('imagenCentral').src = imagen.src;
+            document.getElementById('tituloImagen').textContent = imagen.alt;
+            document.getElementById('contadorImagen').textContent = `${indiceActual + 1} / ${imagenesActuales.length}`;
         }
 
-        // Función para crear miniaturas
         function crearMiniaturas() {
             const contenedor = document.getElementById('miniaturas');
             contenedor.innerHTML = '';
             
-            imagenesActuales.forEach((img, index) => {
+            imagenesActuales.forEach((imagen, index) => {
                 const miniatura = document.createElement('img');
-                miniatura.src = img.src;
-                miniatura.alt = img.alt;
+                miniatura.src = imagen.src;
+                miniatura.alt = imagen.alt;
                 miniatura.style.cssText = 'width: 50px; height: 50px; object-fit: cover; border-radius: 6px; cursor: pointer; opacity: 0.6; transition: all 0.3s ease; border: 2px solid transparent; flex-shrink: 0; scroll-snap-align: center;';
                 
                 if (index === indiceActual) {
@@ -551,88 +554,168 @@
                 miniatura.addEventListener('click', () => {
                     indiceActual = index;
                     mostrarImagenActual();
-                    crearMiniaturas();
+                    actualizarMiniaturas();
                 });
                 
                 contenedor.appendChild(miniatura);
             });
         }
 
-        // Función para navegar entre imágenes
-        function navegarImagen(direccion) {
-            if (direccion === 'anterior') {
-                indiceActual = (indiceActual - 1 + imagenesActuales.length) % imagenesActuales.length;
-            } else {
-                indiceActual = (indiceActual + 1) % imagenesActuales.length;
-            }
-            
-            mostrarImagenActual();
-            crearMiniaturas();
+        function actualizarMiniaturas() {
+            const miniaturas = document.querySelectorAll('#miniaturas img');
+            miniaturas.forEach((miniatura, index) => {
+                if (index === indiceActual) {
+                    miniatura.style.opacity = '1';
+                    miniatura.style.borderColor = '#fff';
+                } else {
+                    miniatura.style.opacity = '0.6';
+                    miniatura.style.borderColor = 'transparent';
+                }
+            });
         }
 
-        // Función para cerrar el visor
-        function cerrarVisor() {
+        // Agregar event listeners a todas las imágenes de la galería
+        document.querySelectorAll('.gallery-container img').forEach((img, index, array) => {
+            img.addEventListener('click', () => {
+                abrirVisor(Array.from(array), index);
+            });
+        });
+
+        // Navegación del visor
+        document.getElementById('prevBtn').addEventListener('click', () => {
+            indiceActual = (indiceActual - 1 + imagenesActuales.length) % imagenesActuales.length;
+            mostrarImagenActual();
+            actualizarMiniaturas();
+        });
+
+        document.getElementById('nextBtn').addEventListener('click', () => {
+            indiceActual = (indiceActual + 1) % imagenesActuales.length;
+            mostrarImagenActual();
+            actualizarMiniaturas();
+        });
+
+        // Cerrar visor
+        document.getElementById('cerrarVisor').addEventListener('click', () => {
             document.getElementById('visorModal').style.display = 'none';
             document.body.style.overflow = 'auto';
-        }
+        });
 
-        // Event listeners para el visor modal
-        document.getElementById('cerrarVisor').addEventListener('click', cerrarVisor);
-        document.getElementById('prevBtn').addEventListener('click', () => navegarImagen('anterior'));
-        document.getElementById('nextBtn').addEventListener('click', () => navegarImagen('siguiente'));
-
-        // Cerrar visor con tecla ESC
+        // Cerrar con ESC o click fuera de la imagen
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
-                cerrarVisor();
+                document.getElementById('visorModal').style.display = 'none';
+                document.body.style.overflow = 'auto';
             }
         });
 
-        // Navegación con teclado en el visor
+        document.getElementById('visorModal').addEventListener('click', (e) => {
+            if (e.target.id === 'visorModal') {
+                document.getElementById('visorModal').style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        });
+
+        // Navegación con teclado
         document.addEventListener('keydown', (e) => {
             if (document.getElementById('visorModal').style.display === 'flex') {
                 if (e.key === 'ArrowLeft') {
-                    navegarImagen('anterior');
+                    indiceActual = (indiceActual - 1 + imagenesActuales.length) % imagenesActuales.length;
+                    mostrarImagenActual();
+                    actualizarMiniaturas();
                 } else if (e.key === 'ArrowRight') {
-                    navegarImagen('siguiente');
+                    indiceActual = (indiceActual + 1) % imagenesActuales.length;
+                    mostrarImagenActual();
+                    actualizarMiniaturas();
                 }
             }
         });
 
-        // 🎯 Configurar clics en las imágenes de galería
-        document.addEventListener('DOMContentLoaded', () => {
-            // Configurar galería de la sección 2
-            const galeriaSeccion2 = document.querySelectorAll('#seccion2 .gallery-container img');
-            galeriaSeccion2.forEach((img, index) => {
-                img.addEventListener('click', () => {
-                    abrirVisor(Array.from(galeriaSeccion2), index);
-                });
-            });
+        // 🖱️ Navegación con rueda del mouse (horizontal scroll) para desktop
+        document.getElementById('visorModal').addEventListener('wheel', (e) => {
+            if (document.getElementById('visorModal').style.display === 'flex') {
+                e.preventDefault();
+                
+                // Horizontal scroll: deltaY positivo = siguiente, negativo = anterior
+                if (e.deltaY > 0) {
+                    indiceActual = (indiceActual + 1) % imagenesActuales.length;
+                    mostrarImagenActual();
+                    actualizarMiniaturas();
+                } else if (e.deltaY < 0) {
+                    indiceActual = (indiceActual - 1 + imagenesActuales.length) % imagenesActuales.length;
+                    mostrarImagenActual();
+                    actualizarMiniaturas();
+                }
+            }
+        }, { passive: false });
 
-            // Configurar galería de la sección 3
-            const galeriaSeccion3 = document.querySelectorAll('#seccion3 .gallery-container img');
-            galeriaSeccion3.forEach((img, index) => {
-                img.addEventListener('click', () => {
-                    abrirVisor(Array.from(galeriaSeccion3), index);
-                });
+        // 📱 Soporte mejorado para gestos táctiles horizontales en móviles
+        let touchStartX = 0;
+        let touchStartY = 0;
+        let isSwiping = false;
+
+        // Detectar touch en toda el área del modal para mejor experiencia móvil
+        document.getElementById('visorModal').addEventListener('touchstart', (e) => {
+            // Solo procesar si el modal está visible
+            if (document.getElementById('visorModal').style.display === 'flex') {
+                touchStartX = e.touches[0].clientX;
+                touchStartY = e.touches[0].clientY;
+                isSwiping = false;
+            }
+        }, { passive: true });
+
+        document.getElementById('visorModal').addEventListener('touchmove', (e) => {
+            if (document.getElementById('visorModal').style.display === 'flex') {
+                const touchCurrentX = e.touches[0].clientX;
+                const touchCurrentY = e.touches[0].clientY;
+                const diffX = Math.abs(touchCurrentX - touchStartX);
+                const diffY = Math.abs(touchCurrentY - touchStartY);
+                
+                // Si el movimiento horizontal es mayor que el vertical, es un swipe horizontal
+                if (diffX > diffY && diffX > 30) {
+                    isSwiping = true;
+                    e.preventDefault(); // Prevenir scroll vertical durante swipe horizontal
+                }
+            }
+        }, { passive: false });
+
+        document.getElementById('visorModal').addEventListener('touchend', (e) => {
+            if (document.getElementById('visorModal').style.display === 'flex' && isSwiping) {
+                const touchEndX = e.changedTouches[0].clientX;
+                const diffX = touchStartX - touchEndX;
+                const minSwipeDistance = 50;
+
+                // Solo procesar swipes horizontales significativos
+                if (Math.abs(diffX) > minSwipeDistance) {
+                    if (diffX > 0) {
+                        // Swipe left - siguiente imagen
+                        indiceActual = (indiceActual + 1) % imagenesActuales.length;
+                    } else {
+                        // Swipe right - imagen anterior
+                        indiceActual = (indiceActual - 1 + imagenesActuales.length) % imagenesActuales.length;
+                    }
+                    mostrarImagenActual();
+                    actualizarMiniaturas();
+                }
+                isSwiping = false;
+            }
+        }, { passive: true });
+
+        // 🎨 Efectos hover mejorados para botones
+        document.querySelectorAll('#prevBtn, #nextBtn, #cerrarVisor').forEach(btn => {
+            btn.addEventListener('mouseenter', () => {
+                btn.style.background = 'rgba(255, 255, 255, 0.2)';
+                btn.style.transform = 'scale(1.1)';
+            });
+            
+            btn.addEventListener('mouseleave', () => {
+                btn.style.background = 'rgba(0, 0, 0, 0.6)';
+                btn.style.transform = 'scale(1)';
             });
         });
-
-        // 🔄 Smooth scroll mejorado para navegación
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
+        // 🚀 Inicializar la primera sección como visible
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('seccion1').classList.add('visible');
         });
     </script>
-
 </body>
-
 </html>
