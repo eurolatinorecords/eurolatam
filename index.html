@@ -210,40 +210,72 @@
             box-shadow: 0 0 28px rgba(255, 255, 255, 0.4);
         }
 
-        /* 📱 Responsivo para móviles */
+        /* 📱 Responsivo para móviles con efecto atmosférico */
         @media (max-width: 1024px) {
-  .topbar {
-    flex-direction: row !important;
-    gap: 12px !important;
-    padding: 12px 0 !important;
-  }
-  .nav-btn {
-    font-size: 15px !important;
-    padding: 10px 0 !important;
-    margin: 0 3px !important;
-  }
-}
-            html {
-                background-image: url('https://i.postimg.cc/d3b8xt4W/FONDO3.jpg') !important;
-                background-size: cover !important;
-                background-position: center center !important;
-                background-repeat: no-repeat !important;
-                background-attachment: scroll !important;
-                background-color: #000 !important;
+            html, body {
+                min-height: 100vh;
+                margin: 0;
+                padding: 0;
+                overflow-x: hidden;
+                scroll-behavior: smooth;
+                scroll-padding-top: 72px;
             }
+            
+            /* Fondo atmosférico que se ve en todas las secciones */
+            html::before {
+                content: '';
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: url('https://i.postimg.cc/d3b8xt4W/FONDO3.jpg') center center;
+                background-size: cover;
+                background-attachment: fixed;
+                background-repeat: no-repeat;
+                z-index: -1;
+                opacity: 0.9;
+            }
+            
             body {
                 background: transparent !important;
                 padding-top: 72px;
-                font-family: 'Arial', sans-serif;
+                font-family: 'Inter', sans-serif;
+                position: relative;
+            }
+            
+            /* Overlay atmosférico sutil */
+            body::before {
+                content: '';
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(180deg, 
+                    rgba(0,0,0,0.1) 0%, 
+                    rgba(0,0,0,0.05) 50%, 
+                    rgba(0,0,0,0.1) 100%);
+                z-index: -1;
+                pointer-events: none;
             }
             .topbar {
-                flex-direction: column;
-                gap: 0;
+                flex-direction: row;
+                flex-wrap: wrap;
+                gap: 8px;
+                justify-content: center;
+                align-items: center;
+                padding: 12px 8px;
             }
             .nav-btn {
-                font-size: 17px;
-                padding: 14px;
-                margin: 6px 0;
+                font-size: 14px;
+                padding: 8px 12px;
+                margin: 2px;
+                border-radius: 15px;
+                background: rgba(255, 255, 255, 0.1);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                white-space: nowrap;
+                min-width: fit-content;
             }
             .gallery-container {
                 height: 320px;
@@ -275,17 +307,45 @@
             }
         }
 
-        @media (orientation: landscape) {
-            body {
-                background-size: cover !important;
-                background-position: center center !important;
-            }
-            .logo {
-                margin-top: 12px;
-                margin-bottom: 12px;
+        /* Additional mobile breakpoints for better iPhone compatibility */
+        @media (max-width: 768px) {
+            .nav-btn {
+                font-size: 13px;
+                padding: 7px 10px;
             }
             .topbar {
-                padding: 12px 0;
+                gap: 6px;
+                padding: 10px 6px;
+            }
+        }
+
+        @media (max-width: 428px) {
+            html::before {
+                background-size: cover;
+                background-position: center center;
+            }
+            .nav-btn {
+                font-size: 12px;
+                padding: 6px 8px;
+                margin: 1px;
+            }
+            .topbar {
+                gap: 4px;
+                padding: 8px 4px;
+            }
+        }
+
+        @media (orientation: landscape) and (max-width: 1024px) {
+            html::before {
+                background-size: cover;
+                background-position: center center;
+            }
+            .topbar {
+                padding: 8px;
+            }
+            .nav-btn {
+                font-size: 12px;
+                padding: 6px 10px;
             }
         }
 
@@ -388,350 +448,191 @@
     </section>
 
     <!-- 🪟 Visor flotante extendido con leyenda, contador y miniaturas -->
-    <div id="visorImagen" style="
-  position: fixed;
-  top: 0; left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0,0,0,0.85);
-  display: none;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  z-index: 9999;
-  backdrop-filter: blur(12px);
-">
-        <div id="prevBtn" style="
-    position: absolute;
-    left: 352px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 42px;
-    color: white;
-    cursor: pointer;
-    z-index: 1000;
-    user-select: none;
-  ">←</div>
-
-        <div id="nextBtn" style="
-    position: absolute;
-    right: 352px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 42px;
-    color: white;
-    cursor: pointer;
-    z-index: 1000;
-    user-select: none;
-  ">→</div>
-
-        <img id="imagenCentral" src="" alt="" style="
-    max-width: 104vw;
-    max-height: 92vh;
-    border-radius: 12px;
-    box-shadow: 0 0 42px rgba(255,255,255,0.4);
-    opacity: 0;
-    transform: scale(0.92);
-    transition: opacity 0.5s ease, transform 0.5s ease;
-    pointer-events: none;
-  " />
-
-        <div id="leyendaImagen" style="
-    margin-top: 18px;
-    font-size: 16px;
-    color: #ddd;
-    font-style: italic;
-    text-align: center;
-    max-width: 80vw;
-  "></div>
-
-        <div id="contadorImagen" style="
-    position: absolute;
-    top: 24px;
-    right: 32px;
-    font-size: 14px;
-    color: #aaa;
-    font-family: monospace;
-    background: rgba(255,255,255,0.06);
-    padding: 4px 8px;
-    border-radius: 6px;
-  ">1 / 10</div>
-
-        <div id="miniaturas" style="
-    position: absolute;
-    bottom: 16px;
-    display: flex;
-    gap: 8px;
-    overflow-x: auto;
-    padding: 8px 12px;
-    background: rgba(0,0,0,0.3);
-    border-radius: 12px;
-    max-width: 90vw;
-        scroll-snap-type: x mandatory;
-  ">
+    <div id="visorModal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.95); z-index: 10000; display: none; justify-content: center; align-items: center; flex-direction: column; backdrop-filter: blur(10px);">
+        
+        <!-- ✨ Contador de imagen (ej: "3 / 10") -->
+        <div id="contadorImagen" style="position: absolute; top: 20px; right: 20px; color: #fff; font-size: 18px; font-weight: 500; background: rgba(0, 0, 0, 0.6); padding: 8px 16px; border-radius: 20px; backdrop-filter: blur(5px);">
+            1 / 10
+        </div>
+        
+        <!-- 🔙 Botón cerrar -->
+        <div id="cerrarVisor" style="position: absolute; top: 20px; left: 20px; color: #fff; font-size: 32px; cursor: pointer; background: rgba(0, 0, 0, 0.6); width: 50px; height: 50px; border-radius: 50%; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(5px); transition: all 0.3s ease;">
+            ✕
+        </div>
+        
+        <!-- 🏷️ Título de la imagen -->
+        <div id="tituloImagen" style="position: absolute; top: 80px; left: 50%; transform: translateX(-50%); color: #fff; font-size: 20px; font-weight: 500; text-align: center; background: rgba(0, 0, 0, 0.6); padding: 12px 24px; border-radius: 25px; backdrop-filter: blur(5px);">
+            Título de la imagen
+        </div>
+        
+        <!-- 📸 Imagen central -->
+        <div style="display: flex; align-items: center; justify-content: center; position: relative; width: 100%; height: 70%;">
+            <div id="prevBtn" style="position: absolute; left: 30px; color: #fff; font-size: 40px; cursor: pointer; z-index: 10001; background: rgba(0, 0, 0, 0.6); width: 60px; height: 60px; border-radius: 50%; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(5px); transition: all 0.3s ease;">
+                ‹
+            </div>
+            <img id="imagenCentral" src="" alt="Imagen ampliada" style="max-width: 90%; max-height: 90%; object-fit: contain; border-radius: 12px; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);" />
+            <div id="nextBtn" style="position: absolute; right: 30px; color: #fff; font-size: 40px; cursor: pointer; z-index: 10001; background: rgba(0, 0, 0, 0.6); width: 60px; height: 60px; border-radius: 50%; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(5px); transition: all 0.3s ease;">
+                ›
+            </div>
+        </div>
+        
+        <!-- 🖼️ Miniaturas horizontales con scroll touch mejorado -->
+        <div id="miniaturas" style="position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; overflow-x: auto; overflow-y: hidden; padding: 10px; background: rgba(0, 0, 0, 0.6); border-radius: 20px; backdrop-filter: blur(5px); max-width: 90%; -webkit-overflow-scrolling: touch; scroll-snap-type: x mandatory; scrollbar-width: none; -ms-overflow-style: none;">
+            <!-- Se llenarán dinámicamente -->
         </div>
     </div>
 
     <script>
-        const secciones = document.querySelectorAll("section");
-        const flechaAbajo = document.querySelector(".flecha-scroll");
-        const flechaArriba = document.querySelector(".flecha-scroll-top");
-
-        const observerSecciones = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
+        // 🎯 Intersection Observer para animaciones de entrada
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
                 if (entry.isIntersecting) {
-                    entry.target.classList.add("visible");
-                    const id = entry.target.id;
-                    flechaArriba.style.display = id === "seccion1" ? "none" : "block";
-                    flechaAbajo.style.opacity = id === "seccion4" ? "0" : "1";
-                } else {
-                    entry.target.classList.remove("visible");
+                    entry.target.classList.add('visible');
                 }
             });
         }, {
-            threshold: 0.4
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
         });
 
-        secciones.forEach(s => observerSecciones.observe(s));
-
-        const galeriaExpandible = document.querySelectorAll(".gallery-container img");
-        const observerGaleriaExpandible = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) entry.target.classList.add("visible");
-            });
-        }, {
-            threshold: 0.3
-        });
-        galeriaExpandible.forEach(img => observerGaleriaExpandible.observe(img));
-
-        galeriaExpandible.forEach(img => {
-            img.addEventListener("touchstart", () => {
-                galeriaExpandible.forEach(i => i.classList.remove("touched"));
-                img.classList.add("touched");
-            });
-            img.addEventListener("touchend", () => {
-                setTimeout(() => img.classList.remove("touched"), 800);
-            });
+        // Observar todas las secciones
+        document.querySelectorAll('section').forEach((section) => {
+            observer.observe(section);
         });
 
-        document.querySelectorAll(".gallery-container").forEach(container => {
-            container.addEventListener("wheel", (e) => {
-                e.preventDefault();
-                container.scrollBy({
-                    left: e.deltaY * 1.2,
-                    behavior: "smooth"
-                });
-            });
+        // Observar imágenes de galería
+        document.querySelectorAll('.gallery-container img').forEach((img) => {
+            observer.observe(img);
         });
 
-        const visor = document.getElementById("visorImagen");
-        const imgCentral = document.getElementById("imagenCentral");
-        const contador = document.getElementById("contadorImagen");
-        const miniaturas = document.getElementById("miniaturas");
-        let indexActivo = 0;
-        let grupoActual = [];
+        // 🖼️ Sistema de visor modal mejorado
+        let imagenesActuales = [];
+        let indiceActual = 0;
 
-        function mostrarImagenCentral(indice) {
-            const target = grupoActual[indice];
-            imgCentral.src = target.src;
-            contador.textContent = `${indice + 1} / ${grupoActual.length}`;
-            miniaturas.innerHTML = grupoActual.map((img, i) => `
-      <img src="${img.src}" data-index="${i}" style="
-        height: 48px;
-        border-radius: 6px;
-        cursor: pointer;
-        opacity: ${i === indice ? "1" : "0.5"};
-        border: ${i === indice ? "2px solid white" : "none"};
-        scroll-snap-align: center;
-        transition: transform 0.3s ease, opacity 0.3s ease;
-      "/>`).join("");
-
-            miniaturas.querySelectorAll("img").forEach(mini => {
-                mini.addEventListener("click", () => {
-                    indexActivo = parseInt(mini.dataset.index);
-                    mostrarImagenCentral(indexActivo);
-                });
-                mini.addEventListener("mouseenter", () => {
-                    mini.style.transform = "scale(1.15)";
-                    mini.style.opacity = "1";
-                });
-                mini.addEventListener("mouseleave", () => {
-                    const isActive = parseInt(mini.dataset.index) === indexActivo;
-                    mini.style.transform = "scale(1)";
-                    mini.style.opacity = isActive ? "1" : "0.5";
-                });
-            });
-
-            imgCentral.style.opacity = "0";
-            imgCentral.style.transform = "scale(0.92)";
-            visor.style.display = "flex";
-            setTimeout(() => {
-                imgCentral.style.opacity = "1";
-                imgCentral.style.transform = "scale(1)";
-            }, 50);
+        // Función para abrir el visor
+        function abrirVisor(imagenes, indiceInicial) {
+            imagenesActuales = imagenes;
+            indiceActual = indiceInicial;
+            
+            document.getElementById('visorModal').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+            
+            mostrarImagenActual();
+            crearMiniaturas();
         }
 
+        // Función para mostrar la imagen actual
+        function mostrarImagenActual() {
+            const img = document.getElementById('imagenCentral');
+            const titulo = document.getElementById('tituloImagen');
+            const contador = document.getElementById('contadorImagen');
+            
+            img.src = imagenesActuales[indiceActual].src;
+            titulo.textContent = imagenesActuales[indiceActual].alt;
+            contador.textContent = `${indiceActual + 1} / ${imagenesActuales.length}`;
+        }
+
+        // Función para crear miniaturas
+        function crearMiniaturas() {
+            const contenedor = document.getElementById('miniaturas');
+            contenedor.innerHTML = '';
+            
+            imagenesActuales.forEach((img, index) => {
+                const miniatura = document.createElement('img');
+                miniatura.src = img.src;
+                miniatura.alt = img.alt;
+                miniatura.style.cssText = 'width: 50px; height: 50px; object-fit: cover; border-radius: 6px; cursor: pointer; opacity: 0.6; transition: all 0.3s ease; border: 2px solid transparent; flex-shrink: 0; scroll-snap-align: center;';
+                
+                if (index === indiceActual) {
+                    miniatura.style.opacity = '1';
+                    miniatura.style.borderColor = '#fff';
+                }
+                
+                miniatura.addEventListener('click', () => {
+                    indiceActual = index;
+                    mostrarImagenActual();
+                    crearMiniaturas();
+                });
+                
+                contenedor.appendChild(miniatura);
+            });
+        }
+
+        // Función para navegar entre imágenes
+        function navegarImagen(direccion) {
+            if (direccion === 'anterior') {
+                indiceActual = (indiceActual - 1 + imagenesActuales.length) % imagenesActuales.length;
+            } else {
+                indiceActual = (indiceActual + 1) % imagenesActuales.length;
+            }
+            
+            mostrarImagenActual();
+            crearMiniaturas();
+        }
+
+        // Función para cerrar el visor
         function cerrarVisor() {
-            imgCentral.style.opacity = "0";
-            imgCentral.style.transform = "scale(0.92)";
-            setTimeout(() => visor.style.display = "none", 400);
+            document.getElementById('visorModal').style.display = 'none';
+            document.body.style.overflow = 'auto';
         }
 
-        document.querySelectorAll("#seccion2 .gallery-container img").forEach((img, index, list) => {
-            img.addEventListener("click", () => {
-                grupoActual = Array.from(list);
-                indexActivo = index;
-                mostrarImagenCentral(indexActivo);
-            });
-            img.addEventListener("touchstart", (e) => {
-                const now = Date.now();
-                if (img._ultimoToque && now - img._ultimoToque < 400) {
-                    grupoActual = Array.from(list);
-                    indexActivo = index;
-                    mostrarImagenCentral(indexActivo);
-                }
-                img._ultimoToque = now;
-            });
+        // Event listeners para el visor modal
+        document.getElementById('cerrarVisor').addEventListener('click', cerrarVisor);
+        document.getElementById('prevBtn').addEventListener('click', () => navegarImagen('anterior'));
+        document.getElementById('nextBtn').addEventListener('click', () => navegarImagen('siguiente'));
+
+        // Cerrar visor con tecla ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                cerrarVisor();
+            }
         });
 
-        document.querySelectorAll("#seccion3 .gallery-container img").forEach((img, index, list) => {
-            img.addEventListener("click", () => {
-                grupoActual = Array.from(list);
-                indexActivo = index;
-                mostrarImagenCentral(indexActivo);
-            });
-            img.addEventListener("touchstart", (e) => {
-                const now = Date.now();
-                if (img._ultimoToque && now - img._ultimoToque < 400) {
-                    grupoActual = Array.from(list);
-                    indexActivo = index;
-                    mostrarImagenCentral(indexActivo);
-                }
-                img._ultimoToque = now;
-            });
-        });
-
-        document.getElementById("nextBtn").addEventListener("click", () => {
-            if (!grupoActual.length) return;
-            indexActivo = (indexActivo + 1) % grupoActual.length;
-            mostrarImagenCentral(indexActivo);
-        });
-
-        document.getElementById("prevBtn").addEventListener("click", () => {
-            if (!grupoActual.length) return;
-            indexActivo = (indexActivo - 1 + grupoActual.length) % grupoActual.length;
-            mostrarImagenCentral(indexActivo);
-        });
-
-        visor.addEventListener("click", (e) => {
-            if (e.target.id === "visorImagen") cerrarVisor();
-        });
-
-        visor.addEventListener("wheel", (e) => {
-            e.preventDefault();
-            if (!grupoActual.length) return;
-            indexActivo = e.deltaY > 0 ?
-                (indexActivo + 1) % grupoActual.length :
-                (indexActivo - 1 + grupoActual.length) % grupoActual.length;
-            mostrarImagenCentral(indexActivo);
-        });
-
-        window.addEventListener("keydown", (e) => {
-            if (visor.style.display === "flex") {
-                if (e.key === "Escape") cerrarVisor();
-                if (e.key === "ArrowRight") {
-                    indexActivo = (indexActivo + 1) % grupoActual.length;
-                    mostrarImagenCentral(indexActivo);
-                }
-                if (e.key === "ArrowLeft") {
-                    indexActivo = (indexActivo - 1 + grupoActual.length) % grupoActual.length;
-                    mostrarImagenCentral(indexActivo);
+        // Navegación con teclado en el visor
+        document.addEventListener('keydown', (e) => {
+            if (document.getElementById('visorModal').style.display === 'flex') {
+                if (e.key === 'ArrowLeft') {
+                    navegarImagen('anterior');
+                } else if (e.key === 'ArrowRight') {
+                    navegarImagen('siguiente');
                 }
             }
         });
 
-        function scrollCinematico(destinoId, duracion = 900) {
-            const destino = document.querySelector(destinoId);
-            if (!destino) return;
-            ocultarFlechas();
-            const inicio = window.pageYOffset;
-            const destinoY = destino.offsetTop;
-            const distancia = destinoY - inicio;
-            const inicioTiempo = performance.now();
+        // 🎯 Configurar clics en las imágenes de galería
+        document.addEventListener('DOMContentLoaded', () => {
+            // Configurar galería de la sección 2
+            const galeriaSeccion2 = document.querySelectorAll('#seccion2 .gallery-container img');
+            galeriaSeccion2.forEach((img, index) => {
+                img.addEventListener('click', () => {
+                    abrirVisor(Array.from(galeriaSeccion2), index);
+                });
+            });
 
-            function animarScroll(tActual) {
-                const tPasado = tActual - inicioTiempo;
-                const progreso = Math.min(tPasado / duracion, 1);
-                const easing = progreso < 0.5 ?
-                    4 * progreso ** 3 :
-                    1 - Math.pow(-2 * progreso + 2, 3) / 2;
-                window.scrollTo(0, inicio + distancia * easing);
-                if (progreso < 1) {
-                    requestAnimationFrame(animarScroll);
-                } else {
-                    setTimeout(mostrarFlechas, 800);
-                }
-            }
-
-            requestAnimationFrame(animarScroll);
-        }
-
-        document.querySelectorAll('a[href^="#"]').forEach(enlace => {
-            enlace.addEventListener("click", function(e) {
-                const destinoId = this.getAttribute("href");
-                const destino = document.querySelector(destinoId);
-                if (destino) {
-                    e.preventDefault();
-                    scrollCinematico(destinoId);
-                    setTimeout(() => mostrarFlechas(), 900);
-                }
+            // Configurar galería de la sección 3
+            const galeriaSeccion3 = document.querySelectorAll('#seccion3 .gallery-container img');
+            galeriaSeccion3.forEach((img, index) => {
+                img.addEventListener('click', () => {
+                    abrirVisor(Array.from(galeriaSeccion3), index);
+                });
             });
         });
 
-        function ocultarFlechas() {
-            flechaAbajo.style.opacity = "0";
-            flechaArriba.style.opacity = "0";
-        }
-
-        function mostrarFlechas() {
-            flechaAbajo.style.opacity = "1";
-            flechaArriba.style.opacity = "1";
-        }
-
-        let scrollActivo;
-        window.addEventListener("scroll", () => {
-            clearTimeout(scrollActivo);
-            ocultarFlechas();
-            scrollActivo = setTimeout(() => {
-                mostrarFlechas();
-            }, 800);
-        });
-
-        let inicioY = null;
-        window.addEventListener("touchstart", (e) => {
-            inicioY = e.touches[0].clientY;
-        });
-
-        window.addEventListener("touchend", (e) => {
-            if (inicioY === null) return;
-            const finY = e.changedTouches[0].clientY;
-            const deltaY = inicioY - finY;
-            const seccionesArray = Array.from(document.querySelectorAll("section"));
-            const indexActual = seccionesArray.findIndex(sec =>
-                sec.classList.contains("visible")
-            );
-
-            let destinoId = null;
-            if (deltaY > 0 && seccionesArray[indexActual + 1]) {
-                destinoId = "#" + seccionesArray[indexActual + 1].id;
-            } else if (deltaY < 0 && seccionesArray[indexActual - 1]) {
-                destinoId = "#" + seccionesArray[indexActual - 1].id;
-            }
-
-            if (destinoId) scrollCinematico(destinoId);
-            inicioY = null;
+        // 🔄 Smooth scroll mejorado para navegación
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
         });
     </script>
+
 </body>
 
 </html>
