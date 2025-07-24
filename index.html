@@ -13,6 +13,7 @@
             overscroll-behavior-y: contain;
             -webkit-overflow-scrolling: touch;
             touch-action: manipulation;
+            scroll-padding-top: 80px;
         }
 
         body {
@@ -23,7 +24,6 @@
             color: #fff;
             overflow-x: hidden;
             overflow-y: scroll;
-            scroll-padding-top: 80px;
         }
 
         section {
@@ -50,11 +50,17 @@
         .topbar {
             position: fixed;
             top: 0;
-            left: 50%;
-            transform: translateX(-50%);
+            left: 0;
+            width: 100%;
+            z-index: 9999;
+            background: rgba(0, 0, 0, 0.85);
+            text-align: center;
+            padding: 16px 0;
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid #333;
             display: flex;
             gap: 24px;
-            z-index: 999;
+            justify-content: center;
         }
 
         .nav-btn {
@@ -66,13 +72,14 @@
             border: none;
             padding: 20px 0;
             transition: all 0.3s ease;
+            cursor: pointer;
         }
 
         .nav-btn:hover {
             text-shadow: 0 0 6px #fff;
             transform: scale(1.06);
         }
-/* Logo fixed */
+
         .logo-fixed {
             position: fixed;
             top: 80px;
@@ -160,8 +167,6 @@
             transition: opacity 0.3s ease;
         }
 
-
-        /* 🎨 Galería Expandible */
         .gallery-expandable {
             width: 100%;
             display: flex;
@@ -196,7 +201,7 @@
         }
 
         .gallery-container img.visible {
-            opacity: 20;
+            opacity: 1;
             transform: scale(1);
         }
 
@@ -207,122 +212,82 @@
 
         /* 📱 Responsivo para móviles */
         @media (max-width: 1024px) {
-
-            html,
-            body {
-                height: 100%;
+            html, body {
+                min-height: 100vh;
                 margin: 0;
                 padding: 0;
                 overflow-x: hidden;
                 scroll-behavior: smooth;
+                scroll-padding-top: 72px;
             }
-
-            body {
+            html {
                 background-image: url('https://i.postimg.cc/d3b8xt4W/FONDO3.jpg') !important;
                 background-size: cover !important;
                 background-position: center center !important;
                 background-repeat: no-repeat !important;
                 background-attachment: scroll !important;
                 background-color: #000 !important;
+            }
+            body {
+                background: transparent !important;
                 padding-top: 72px;
-                /* evita que el menú fijo cubra las secciones */
                 font-family: 'Arial', sans-serif;
             }
-
-            header .logo {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                margin: 24px auto;
-                width: 100%;
-                max-width: 360px;
+            .topbar {
+                flex-direction: column;
+                gap: 0;
             }
-
-            nav#menu {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                z-index: 9999;
-                background: rgba(0, 0, 0, 0.85);
-                text-align: center;
-                padding: 16px 0;
-                backdrop-filter: blur(8px);
-                border-bottom: 1px solid #333;
-            }
-
-            nav#menu a {
-                color: #fff;
-                text-decoration: none;
+            .nav-btn {
                 font-size: 17px;
-                display: block;
                 padding: 14px;
                 margin: 6px 0;
-                transition: color 0.3s ease, transform 0.3s ease;
             }
-
-            nav#menu a:hover {
-                color: #00fff7;
-                transform: scale(1.08);
-            }
-
             .gallery-container {
                 height: 320px;
                 gap: 6px;
                 padding-left: 12px;
             }
-
             .gallery-container img {
                 width: 32%;
                 border-radius: 6px;
                 height: 180px;
             }
-
             .gallery-container img:hover {
                 width: 42%;
             }
-
             #imagenCentral {
                 max-width: 96vw;
                 max-height: 88vh;
             }
-
             #prevBtn,
             #nextBtn {
                 font-size: 32px;
             }
-
             .flecha-scroll,
             .flecha-scroll-top {
                 font-size: 36px;
             }
-
             #miniaturas img {
                 height: 36px !important;
             }
         }
 
-        /* 🌄 Paisaje horizontal */
         @media (orientation: landscape) {
             body {
                 background-size: cover !important;
                 background-position: center center !important;
             }
-
-            header .logo {
+            .logo {
                 margin-top: 12px;
                 margin-bottom: 12px;
             }
-
-            nav#menu {
+            .topbar {
                 padding: 12px 0;
             }
         }
 
-        /* 🧼 Scroll atmosférico suavizado */
         body {
             scroll-padding-top: 72px;
-            /* evita que el menú fijo tape las secciones al hacer scroll */
         }
     </style>
 </head>
@@ -412,11 +377,7 @@
             <a href="https://instagram.com/eurolatam" target="_blank" style="font-size: 20px; color: #fff; text-decoration: none; padding: 16px 32px; border: 2px solid #fff; border-radius: 8px; transition: all 0.3s ease;">
                 Instagram
             </a>
-
-            <!-- Espaciado vertical -->
             <div style="height: 40px;"></div>
-
-            <!-- 🔼 Flecha scroll hacia arriba (regresa a Sección 3 / Lettering) -->
             <a href="#seccion3" class="flecha-scroll-top">
                 <img src="https://i.postimg.cc/YqgtYs7M/FLECHA2.png" alt="Volver a Sección 3" />
             </a>
@@ -437,7 +398,6 @@
   z-index: 9999;
   backdrop-filter: blur(12px);
 ">
-        <!-- 🔘 Navegación lateral -->
         <div id="prevBtn" style="
     position: absolute;
     left: 352px;
@@ -462,7 +422,6 @@
     user-select: none;
   ">→</div>
 
-        <!-- 🖼️ Imagen central con fade-scale -->
         <img id="imagenCentral" src="" alt="" style="
     max-width: 104vw;
     max-height: 92vh;
@@ -474,7 +433,6 @@
     pointer-events: none;
   " />
 
-        <!-- 📝 Leyenda dinámica -->
         <div id="leyendaImagen" style="
     margin-top: 18px;
     font-size: 16px;
@@ -484,7 +442,6 @@
     max-width: 80vw;
   "></div>
 
-        <!-- 🔢 Contador de posición -->
         <div id="contadorImagen" style="
     position: absolute;
     top: 24px;
@@ -497,7 +454,6 @@
     border-radius: 6px;
   ">1 / 10</div>
 
-        <!-- 🧩 Miniaturas flotantes -->
         <div id="miniaturas" style="
     position: absolute;
     bottom: 16px;
@@ -581,8 +537,8 @@
         height: 48px;
         border-radius: 6px;
         cursor: pointer;
-        opacity: \${i === indice ? "1" : "0.5"};
-        border: \${i === indice ? "2px solid white" : "none"};
+        opacity: ${i === indice ? "1" : "0.5"};
+        border: ${i === indice ? "2px solid white" : "none"};
         scroll-snap-align: center;
         transition: transform 0.3s ease, opacity 0.3s ease;
       "/>`).join("");
