@@ -212,14 +212,17 @@
 
         /* 📱 Responsivo para móviles */
         @media (max-width: 1024px) {
-            html, body {
-                min-height: 100vh;
-                margin: 0;
-                padding: 0;
-                overflow-x: hidden;
-                scroll-behavior: smooth;
-                scroll-padding-top: 72px;
-            }
+  .topbar {
+    flex-direction: row !important;
+    gap: 12px !important;
+    padding: 12px 0 !important;
+  }
+  .nav-btn {
+    font-size: 15px !important;
+    padding: 10px 0 !important;
+    margin: 0 3px !important;
+  }
+}
             html {
                 background-image: url('https://i.postimg.cc/d3b8xt4W/FONDO3.jpg') !important;
                 background-size: cover !important;
