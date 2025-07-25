@@ -446,7 +446,7 @@
         </div>
     </section>
 
-    <!-- 🪟 Visor flotante extendido con leyenda, contador y miniaturas -->
+    <!-- 🪟 Visor flotante extendido con contador y miniaturas -->
     <div id="visorModal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.95); z-index: 10000; display: none; justify-content: center; align-items: center; flex-direction: column; backdrop-filter: blur(10px);">
         
         <!-- ✨ Contador de imagen (ej: "3 / 10") -->
@@ -457,11 +457,6 @@
         <!-- 🔙 Botón cerrar -->
         <div id="cerrarVisor" style="position: absolute; top: 20px; left: 20px; color: #fff; font-size: 32px; cursor: pointer; background: rgba(0, 0, 0, 0.6); width: 50px; height: 50px; border-radius: 50%; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(5px); transition: all 0.3s ease;">
             ✕
-        </div>
-        
-        <!-- 🏷️ Título de la imagen -->
-        <div id="tituloImagen" style="position: absolute; top: 80px; left: 50%; transform: translateX(-50%); color: #fff; font-size: 20px; font-weight: 500; text-align: center; background: rgba(0, 0, 0, 0.6); padding: 12px 24px; border-radius: 25px; backdrop-filter: blur(5px);">
-            Título de la imagen
         </div>
         
         <!-- 📸 Imagen central -->
@@ -523,7 +518,6 @@
         function mostrarImagenActual() {
             const imagen = imagenesActuales[indiceActual];
             document.getElementById('imagenCentral').src = imagen.src;
-            document.getElementById('tituloImagen').textContent = imagen.alt;
             document.getElementById('contadorImagen').textContent = `${indiceActual + 1} / ${imagenesActuales.length}`;
         }
 
