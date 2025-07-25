@@ -221,7 +221,7 @@
                 scroll-padding-top: 72px;
             }
             
-            /* Fondo atmosférico que se ve en todas las secciones */
+            /* Fondo limpio y nítido para móviles */
             html::before {
                 content: '';
                 position: fixed;
@@ -234,7 +234,7 @@
                 background-attachment: fixed;
                 background-repeat: no-repeat;
                 z-index: -1;
-                opacity: 0.9;
+                opacity: 1;
             }
             
             body {
@@ -242,22 +242,6 @@
                 padding-top: 72px;
                 font-family: 'Inter', sans-serif;
                 position: relative;
-            }
-            
-            /* Overlay atmosférico sutil */
-            body::before {
-                content: '';
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: linear-gradient(180deg, 
-                    rgba(0,0,0,0.1) 0%, 
-                    rgba(0,0,0,0.05) 50%, 
-                    rgba(0,0,0,0.1) 100%);
-                z-index: -1;
-                pointer-events: none;
             }
             .topbar {
                 flex-direction: row;
@@ -317,6 +301,11 @@
 
         /* Additional mobile breakpoints for better iPhone compatibility */
         @media (max-width: 768px) {
+            html::before {
+                background-size: cover;
+                background-position: center center;
+                transform: scale(1.1);
+            }
             .nav-btn {
                 font-size: 13px;
                 padding: 7px 10px;
@@ -331,6 +320,7 @@
             html::before {
                 background-size: cover;
                 background-position: center center;
+                transform: scale(1.05);
             }
             .nav-btn {
                 font-size: 12px;
@@ -347,6 +337,7 @@
             html::before {
                 background-size: cover;
                 background-position: center center;
+                transform: scale(1.08);
             }
             .topbar {
                 padding: 8px;
@@ -652,7 +643,6 @@
         let touchStartX = 0;
         let touchStartY = 0;
         let isSwiping = false;
-
         // Detectar touch en toda el área del modal para mejor experiencia móvil
         document.getElementById('visorModal').addEventListener('touchstart', (e) => {
             // Solo procesar si el modal está visible
@@ -662,7 +652,6 @@
                 isSwiping = false;
             }
         }, { passive: true });
-
         document.getElementById('visorModal').addEventListener('touchmove', (e) => {
             if (document.getElementById('visorModal').style.display === 'flex') {
                 const touchCurrentX = e.touches[0].clientX;
@@ -677,13 +666,11 @@
                 }
             }
         }, { passive: false });
-
         document.getElementById('visorModal').addEventListener('touchend', (e) => {
             if (document.getElementById('visorModal').style.display === 'flex' && isSwiping) {
                 const touchEndX = e.changedTouches[0].clientX;
                 const diffX = touchStartX - touchEndX;
                 const minSwipeDistance = 50;
-
                 // Solo procesar swipes horizontales significativos
                 if (Math.abs(diffX) > minSwipeDistance) {
                     if (diffX > 0) {
@@ -699,7 +686,6 @@
                 isSwiping = false;
             }
         }, { passive: true });
-
         // 🎨 Efectos hover mejorados para botones
         document.querySelectorAll('#prevBtn, #nextBtn, #cerrarVisor').forEach(btn => {
             btn.addEventListener('mouseenter', () => {
